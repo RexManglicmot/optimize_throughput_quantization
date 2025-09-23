@@ -3,11 +3,12 @@ from huggingface_hub import InferenceClient
 import os, sys
 from app.config import cfg
 from tqdm import tqdm
+from pathlib import Path
 
 # Obtain attributes from config object
-MODEL = str(cfg.models.primary)
+MODEL = cfg.models.primary
 COUNT = int(cfg.models.n_prompts)
-TOKEN = cfg.HF_TOKEN
+TOKEN = os.getenv("HF_TOKEN")
 MAX_TOKENS = int(cfg.llm_script.max_tokens)
 TEMPERATURE = float(cfg.llm_script.temperature)
 TOP_P = float(cfg.llm_script.top_p)
@@ -25,28 +26,26 @@ def main():
     if not TOKEN:
         sys.exit("Set HF_TOKEN in environment.")
 
-    client = InferenceClient(model=MODEL, token=TOKEN)
+    client = InferenceClient(provider="hf-inference", token=TOKEN)
 
-    # Try chat; 
-    # Put tqdm to measure progress....dont know if it is right?
-
-    resp = tqdm(client.chat.completions.create(
+    # Use the universal text_generation endpoint (works for chat & non-chat models)
+    text = client.text_generation(
         model=MODEL,
-        messages=[{"role":"system","content":SYSTEM},{"role":"user","content":USER}],
-        max_tokens=MAX_TOKENS, temperature=TEMPERATURE, top_p=TOP_P,
-    ))
-
-    text = resp.choices[0].message.content
+        prompt=SYSTEM + "\n\n" + USER,
+        max_new_tokens=MAX_TOKENS,
+        temperature=TEMPERATURE,
+        top_p=TOP_P,
+    )
     
 
     # COMPLICATED LINE OF CODE HERE????!!!
     lines = [ln.strip().strip("`\"' ") for ln in text.splitlines() if ln.strip()]
     
     # Write to file
-    os.makedirs("data", exist_ok=True)
-    with open("data/prompts.txt", "w", encoding="utf-8") as f:
-        f.write("\n".join(lines) + "\n")
-    print(f" Wrote {len(lines)} prompts to data/prompts.txt using {MODEL}")
+    out = Path("data/prompts.txt")
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print(f"✅ Wrote {len(lines)} prompts to {out} using {MODEL}")
 
 if __name__ == "__main__":
     main()

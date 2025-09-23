@@ -1,5 +1,6 @@
 import os
 import yaml
+import torch
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -26,6 +27,10 @@ def load_config(path: Path = CONFIG_PATH):
     with open(path, "r") as f:
         cfg = yaml.safe_load(f)
 
+    # resolve device
+    if cfg["models"].get("device", "auto") == "auto":
+        cfg["models"]["device"] = "cuda" if torch.cuda.is_available() else "cpu"
+
     root = path.parent
     # normalize project paths
     if "project" in cfg:
@@ -37,12 +42,11 @@ def load_config(path: Path = CONFIG_PATH):
     if "paths" in cfg:
         for k, v in cfg["paths"].items():
             cfg["paths"][k] = str((root / v).resolve())
-
+    
     return DotDict(cfg)
 
 # Global config object
 cfg = load_config()
-
 
 # Hugging Face API key (optional if using private models)
 HF_TOKEN = os.getenv("HF_TOKEN")
@@ -55,7 +59,7 @@ if __name__ == "__main__":
     print("Output dir:", cfg.project.output_dir)
     print("Primary model:", cfg.models.primary)
     print("Device:", cfg.models.device)
-    print("HF_TOKEN found:", HF_TOKEN is not None)
+    print("hf_token found:", cfg.hf_token is not None)
     print("Precisions to sweep", cfg.models.presions)
     print("Batches to test are", cfg.models.batch_sizes)
     print("For synthetic data, max tokens are ", cfg.llm_script.max_tokens, "and the temp is",

@@ -1,0 +1,57 @@
+
+# Basic info
+project:
+  name: "quantization_optimize_throughput"
+  input_dir: "./data"             
+  output_dir: "./outputs"         
+
+# All file/folder paths in one place 
+paths:
+  prompts_txt: "data/prompts.txt"
+  results_csv: "outputs/results.csv"
+  logs_dir: "outputs/logs"
+  plots_dir: "outputs"
+
+# Model + inference knobs 
+models:
+  device: "cuda"                # "cuda" | "cpu" | "mps"
+  primary: "gpt2-medium"        # HF repo id; used in your __main__ print
+
+  # Precision sweep (quantization) — core of the project
+  precisions: ["fp32", "fp16", "int8", "int4"]
+
+  # Batch sizes to test 
+  batch_sizes: [1, 4, 8, 16, 32]
+
+  # Generation params (fixed across runs for fairness)
+  max_new_tokens: 64
+  temperature: 0.2
+  top_p: 0.95
+  use_kv_cache: true
+
+  # Workload / prompts
+  n_prompts: 1000
+  prompt_seed: 143 # I love you
+  warmup_requests: 10
+
+  # SLA / measurement
+  sla_p95_seconds: 1.5          # target UX constraint
+  repeats: 3                    # repeat each (precision,batch) for stability
+  cuda_sync: true               # ensure accurate timing when on CUDA
+  seed: 808
+
+  # Optional accuracy hook (keep false if focusing purely on throughput)
+  # use_accuracy_eval: false
+  # accuracy_dataset: "pubmedqa"
+  # accuracy_sample_size: 100
+
+  # Vast.ai run metadata (hard-coded for throughput-per-$ calc)
+  # Can change
+  gpu_name: "NVIDIA A100"
+  gpu_vram_gb: 40
+  gpu_cost_usd_per_hour: 1.99
+
+llm_script:
+  max_tokens: 2048
+  temperature: 0.7
+  top_p: 0.95

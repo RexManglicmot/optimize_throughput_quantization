@@ -1,0 +1,14 @@
+# Venv
+venv_optimize_throughput_quantization
+
+# Cache
+__pycache__
+
+# Env
+.env
+
+# Folders
+pics/
+
+# Files
+check_cache_models.py

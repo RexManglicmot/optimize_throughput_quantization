@@ -1,0 +1,29 @@
+# Core
+torch>=2.1
+transformers>=4.40
+accelerate>=0.30
+
+# Quantization (bitsandbytes-backed INT8/INT4)
+bitsandbytes
+
+# Hugging Face client + datasets
+huggingface_hub>=0.23
+datasets>=2.19
+
+# Config + data handling
+pyyaml>=6.0
+pandas>=2.2
+
+# Visualization
+matplotlib>=3.8
+
+# Optional (if you want prompt generation via LLM API)
+# huggingface-hub already listed, just need this:
+# (comment out if not using LLM to make synthetic data)
+# openai
+
+# Development/testing
+tqdm>=4.66
+pytest>=8.0
+
+dotenv

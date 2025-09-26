@@ -53,13 +53,13 @@ From a business standpoint, inference efficiency is critical because serving lar
 
 ## Results: Visuals
  
-Throughput and Precision.
+![Throughput and Precision](outputs/figures/throughput_vs_precision.pngx)
 *Throughput increases as precision is reduced, with FP16 providing the best performance across all batch sizes — peaking at ~30.6 QPS with batch size 256, nearly 3× faster than FP32. INT4 delivers lower throughput at small batch sizes but scales effectively, surpassing FP32 and approaching FP16 as the batch size grows. These results highlight that precision reduction, especially FP16, can significantly boost inference speed when workloads are scaled.*
 
 
 
 
-VRAM and Precision.
+![VRAM and Precision](outputs/figures/vram_vs_precision.png)
 *VRAM usage decreases significantly with lower precision. FP32 peaks near 40 GB at batch size 256, while FP16 cuts memory roughly in half, and INT4 reduces it even further — dropping as low as 8 GB at batch size 32. These results show that quantization not only improves efficiency but also enables serving larger batch sizes within the same GPU memory budget, making deployment more scalable and cost-effective.*
 
 
@@ -68,7 +68,7 @@ VRAM and Precision.
 *Latency decreases as batch size increases, with lower precision formats providing the best improvements. FP16 consistently achieves the lowest latency, dropping to ~32 ms at batch size 256, while INT4 starts higher but converges closer to FP16 as batch size grows. FP32 remains the slowest across all batch sizes, underscoring how precision reduction not only boosts throughput but also reduces response times for inference.*
 
 
-Speed vs vs fp32 vs batch size
+![Speed vs vs fp32 vs batch size](outputs/figures/speedup_vs_fp32.png)
 *Quantization delivers clear speedups over FP32 as batch size grows. FP16 provides the strongest gains, reaching ~2.6× faster than FP32 at batch size 256, while INT4 shows steady improvements, achieving ~2.2× at the same scale. These results highlight that precision reduction not only lowers memory and latency but also translates directly into faster inference throughput relative to the FP32 baseline.*
 
 

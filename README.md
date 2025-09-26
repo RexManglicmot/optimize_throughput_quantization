@@ -47,29 +47,29 @@ From a business standpoint, inference efficiency is critical because serving lar
 | 256 | fp32 | 12 | 1.81K | 87 | 39.79 |
 | 256 | int4 | 25 | 3.96K | 40 | 20.35 |
 
-*FP16 is the clear winner across all batches—QPS roughly doubles or better (e.g., 12→31 at bsz=256), p95 latency is about half of FP32, and VRAM drops by ~50%. INT4 matches or beats FP32 from bsz≥64 (1.2–2.2× QPS) while cutting peak VRAM by ~50–70%; at bsz=32 it ties FP32 on QPS with ~72% less VRAM and similar latency.*
+* **FP16 is the clear winner across all batches—QPS roughly doubles or better (e.g., 12→31 at bsz=256), p95 latency is about half of FP32, and VRAM drops by ~50%**. INT4 matches or beats FP32 from bsz≥64 (1.2–2.2× QPS) while cutting peak VRAM by ~50–70%; at bsz=32 it ties FP32 on QPS with ~72% less VRAM and similar latency.*
 
 
 
 ## Results: Visuals
  
-![Throughput and Precision](outputs/figures/throughput_vs_precision.pngx)
-*Throughput increases as precision is reduced, with FP16 providing the best performance across all batch sizes — peaking at ~30.6 QPS with batch size 256, nearly 3× faster than FP32. INT4 delivers lower throughput at small batch sizes but scales effectively, surpassing FP32 and approaching FP16 as the batch size grows. These results highlight that precision reduction, especially FP16, can significantly boost inference speed when workloads are scaled.*
+![Throughput and Precision](outputs/figures/throughput_vs_precision.png)
+* **Throughput increases as precision is reduced, with FP16 providing the best performance across all batch sizes — peaking at ~30.6 QPS with batch size 256, nearly 3× faster than FP32**. INT4 delivers lower throughput at small batch sizes but scales effectively, surpassing FP32 and approaching FP16 as the batch size grows. These results highlight that precision reduction, especially FP16, can significantly boost inference speed when workloads are scaled.*
 
 
 
 
 ![VRAM and Precision](outputs/figures/vram_vs_precision.png)
-*VRAM usage decreases significantly with lower precision. FP32 peaks near 40 GB at batch size 256, while FP16 cuts memory roughly in half, and INT4 reduces it even further — dropping as low as 8 GB at batch size 32. These results show that quantization not only improves efficiency but also enables serving larger batch sizes within the same GPU memory budget, making deployment more scalable and cost-effective.*
+* **VRAM usage decreases significantly with lower precision**. FP32 peaks near 40 GB at batch size 256, while FP16 cuts memory roughly in half, and INT4 reduces it even further — dropping as low as 8 GB at batch size 32. These results show that quantization not only improves efficiency but also enables serving larger batch sizes within the same GPU memory budget, making deployment more scalable and cost-effective.*
 
 
 
 ![Latency vs Batch Size](outputs/figures/latency_vs_batch_avg.png)
-*Latency decreases as batch size increases, with lower precision formats providing the best improvements. FP16 consistently achieves the lowest latency, dropping to ~32 ms at batch size 256, while INT4 starts higher but converges closer to FP16 as batch size grows. FP32 remains the slowest across all batch sizes, underscoring how precision reduction not only boosts throughput but also reduces response times for inference.*
+* **Latency decreases as batch size increases, with lower precision formats providing the best improvements**. FP16 consistently achieves the lowest latency, dropping to ~32 ms at batch size 256, while INT4 starts higher but converges closer to FP16 as batch size grows. FP32 remains the slowest across all batch sizes, underscoring how precision reduction not only boosts throughput but also reduces response times for inference.*
 
 
 ![Speed vs vs fp32 vs batch size](outputs/figures/speedup_vs_fp32.png)
-*Quantization delivers clear speedups over FP32 as batch size grows. FP16 provides the strongest gains, reaching ~2.6× faster than FP32 at batch size 256, while INT4 shows steady improvements, achieving ~2.2× at the same scale. These results highlight that precision reduction not only lowers memory and latency but also translates directly into faster inference throughput relative to the FP32 baseline.*
+* **Quantization delivers clear speedups over FP32 as batch size grows**. FP16 provides the strongest gains, reaching ~2.6× faster than FP32 at batch size 256, while INT4 shows steady improvements, achieving ~2.2× at the same scale. These results highlight that precision reduction not only lowers memory and latency but also translates directly into faster inference throughput relative to the FP32 baseline.*
 
 
 ## Results: Table, Statisitical Tests
@@ -85,7 +85,9 @@ From a business standpoint, inference efficiency is critical because serving lar
 | 256 | fp16 | faster | ×2.64 | 2.62–2.65 | 1.0e-06 |
 | 256 | int4 | faster | ×2.19 | 2.18–2.20 | 6.9e-07 |
 
-*The effect scales with batch size: FP16 delivers ~2–2.6× at 64–256, with ultra-tight CIs and p-values ≪ 1e-6—rock-solid wins. INT4 is the only miss at bsz=32 (0.95×), but turns decisively faster from bsz≥64 (1.24–2.19×), also with strong significance. In short: bigger batches amplify quantization’s throughput advantage, with FP16 winning across the board and INT4 paying off once you batch.*
+*The effect scales with batch size: **FP16 delivers ~2–2.6× at 64–256**, with ultra-tight CIs and p-values ≪ 1e-6—rock-solid wins. INT4 is the only miss at bsz=32 (0.95×), but turns decisively faster from bsz≥64 (1.24–2.19×), also with strong significance. 
+
+In short: **bigger batches amplify quantization’s throughput advantage**, with FP16 winning across the board and INT4 paying off once you batch.*
 
 
 
@@ -95,7 +97,7 @@ From a business standpoint, inference efficiency is critical because serving lar
 | fp16 | faster | ×2.19 | 1.81–2.64 | <1e-12 |
 | int4 | faster | ×1.50 | 1.02–2.19 | <1e-12 |
 
-*Both effects are statistically decisive (p < 1e−12); FP16 shows the strongest, most reliable lift, while INT4 delivers a solid overall gain.*
+* **Both effects are statistically decisive** (p < 1e−12); FP16 shows the strongest, most reliable lift, while INT4 delivers a solid overall gain.*
 
 
 

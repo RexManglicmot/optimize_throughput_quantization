@@ -47,14 +47,12 @@ From a business standpoint, inference efficiency is critical because serving lar
 | 256 | fp32 | 12 | 1.81K | 87 | 39.79 |
 | 256 | int4 | 25 | 3.96K | 40 | 20.35 |
 
-* **FP16 is the clear winner across all batches—QPS roughly doubles or better (e.g., 12→31 at bsz=256), p95 latency is about half of FP32, and VRAM drops by ~50%**. INT4 matches or beats FP32 from bsz≥64 (1.2–2.2× QPS) while cutting peak VRAM by ~50–70%; at bsz=32 it ties FP32 on QPS with ~72% less VRAM and similar latency.*
+**FP16 is the clear winner across all batches—QPS roughly doubles or better (e.g., 12→31 at bsz=256), p95 latency is about half of FP32, and VRAM drops by ~50%**. *INT4 matches or beats FP32 from bsz≥64 (1.2–2.2× QPS) while cutting peak VRAM by ~50–70%; at bsz=32 it ties FP32 on QPS with ~72% less VRAM and similar latency.*
 
 
 
 ## Results: Visuals
- 
- ---
- 
+
 ### Precision:
 
 ![Throughput and Precision](outputs/figures/throughput_vs_precision.png)
@@ -123,22 +121,16 @@ From a business standpoint, inference efficiency is critical because serving lar
 
 
 
-
-
-
 ## Next Steps
-
-
-
-
+- Test **accuracy trade-offs** by running end-to-end evaluation on downstream tasks with quantized models. This project did not measure accuracy, but since the PubMedQA dataset includes gold labels, it would be valuable to evaluate how quantization impacts predictive performance.  
+  
+- Add **long-context benchmarks** (e.g., 4k–8k tokens) to evaluate stability and memory efficiency at scale. This project has so far focused on short-to-medium context prompts (512–1k tokens), so it would be worthwhile to see how far quantization can be pushed under longer sequences.  
 
 ## Conclusion
-
-
-
+Quantization proved to be a powerful technique for improving inference efficiency, delivering clear gains in throughput, latency, memory usage, and cost compared to FP32. These results highlight its potential to make large-scale model deployment more practical and cost-effective, while motivating future work on accuracy and long-context performance.  
 
 ## Tech Stack
-
+Python, PyTorch, HuggingFace, BitsAndBytes (quantization), pandas, numpy, scipy, matplotlib, Docker, NVIDIA, Cloud GPU
 
 
 

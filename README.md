@@ -53,6 +53,8 @@ From a business standpoint, inference efficiency is critical because serving lar
 
 ## Results: Visuals
  
+ ---
+ 
 ### Precision:
 
 ![Throughput and Precision](outputs/figures/throughput_vs_precision.png)
@@ -66,6 +68,8 @@ From a business standpoint, inference efficiency is critical because serving lar
 ![Latency vs Precision](outputs/figures/latency_grouped_p50_p95.png)
 ***Quantization reduces both median (p50) and tail (p95) latency compared to FP32.*** *FP16 achieves the lowest latencies overall, with p50 around 55 ms and p95 near 60 ms, while INT4 performs better than FP32 but remains higher than FP16. These results highlight that reduced precision not only improves average performance but also tightens latency distribution, making inference more predictable at scale.*
 
+---
+
 ### Batch Sizes:
 
 ![Latency vs Batch Size](outputs/figures/latency_vs_batch_avg.png)
@@ -74,6 +78,8 @@ From a business standpoint, inference efficiency is critical because serving lar
 
 ![Speed vs vs fp32 vs batch size](outputs/figures/speedup_vs_fp32.png)
 ***Quantization delivers clear speedups over FP32 as batch size grows.*** *FP16 provides the strongest gains, reaching ~2.6× faster than FP32 at batch size 256, while INT4 shows steady improvements, achieving ~2.2× at the same scale. These results highlight that precision reduction not only lowers memory and latency but also translates directly into faster inference throughput relative to the FP32 baseline.*
+
+---
 
 ### Costs:
 

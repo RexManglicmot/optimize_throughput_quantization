@@ -21,7 +21,7 @@ In this study I benchmark the same base model across three precisions to quantif
 Sweep batch sizes are **{32, 64, 128, 256}** under identical generation settings (fixed prompts, max input length 512, fixed max_new_tokens/temperature/top-p) and a single attention backend for fairness, reporting per-batch results and across-batch summaries to show how precision interacts with load.
 
 ## Dataset (PubMedQA)
-This projects uses PubMedQA-Labeled dataset purely as a request generator. Although it includes yes/no/maybe labels, I ignored labels because the project overall goal is throughput/latency, not accuracy. 
+This projects uses [HuggingFace PubMedQA-Labeled dataset](https://huggingface.co/datasets/bigbio/pubmed_qa) purely as a request generator. Although it includes yes/no/maybe labels, I ignored labels because the project overall goal is throughput/latency, not accuracy. 
 
 For each run, I drew n=500 questions (fixed seed) and prompt with the question text only (no abstracts, options, or labels), truncating/padding inputs to 512 tokens to keep batches comparable. Generations are produced solely to exercise the model. I report QPS, tokens/sec, latency (p50/p95), and peak VRAM while sweeping precision (fp32/fp16/int4) and batch size (32/64/128/256) under fixed generation settings.
 

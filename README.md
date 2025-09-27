@@ -128,6 +128,8 @@ Outputs
 
 ## Results: Table, Statisitical Tests
 
+To understand throughput further, we ran n=3 independent repeats per (batch size, precision) and compared each quantized setting (FP16, INT4) directly to the FP32 baseline. Because QPS is positive and multiplicative—and variance can differ—we analyzed log(QPS) and used a Welch two-sample t-test per batch (robust to unequal variances with small n). We report the ratio of geometric means (× vs FP32) with 95% CIs; “faster/slower” is based on whether the CI excludes 1. We then roll results up across batches with a geometric-mean ratio (and a combined p-value for context). This design answers the practical question: **Is the quantized model faster than FP32 at the same batch?**
+
 #### QPS vs FP32 — per batch
 | Batch | Precision | Direction | × vs FP32 | 95% CI | p(two-sided) |
 | ---: | --- | --- | ---: | --- | ---: |

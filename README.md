@@ -20,13 +20,38 @@ From a business standpoint, inference efficiency is critical because serving lar
 
 
 ## Workflow
+```text
+Questions, n=500
+   |
+   ├─ Precisions sweep: fp32, fp16, int4
+   ├─ Batch sizes: 32, 64, 128, 256
+   └─ Replicates per setting: repeat = N (≥3 for stats)
+   |
+Inference (Mistral-7B, CUDA; attention backend = SDPA for apples-to-apples comparison)
+   |
+Metrics (QPS primary; tokens/sec secondary; p50/p95 latency; peak VRAM; cost)
+   |
+Outputs
+   ├─ CSVs
+   │   ├─ results.csv — averaged per (precision, batch)
+   │   └─ results_n.csv — all replicates (for stats)
+   ├─ Plots (throughput, latency, VRAM, cost, etc.)
+   └─ Tables
+       ├─ QPS vs FP32 per-batch (Welch log-t; direction, × vs FP32, 95% CI, p)
+       └─ QPS vs FP32 geo-mean across batches (combined CI/p)
 
-
-
-
+```
 
 ## Metrics
 
+**Queries per Second (QPS), a throughput measurement:** Number of complete inference requests served per second, showing overall throughput. Higher QPS indicates better utilization of hardware for serving multiple users or jobs.  
+
+**Tokens per Second (TPS), a throughput measurement:** Number of output tokens generated per second, a finer-grained measure of generation speed. Higher TPS is better, as it indicates faster token generation and more efficient inference.  
+
+
+**Latency (p50 and p95, ms):** Median (p50) and 95th percentile (p95) response times in milliseconds, capturing both typical responsiveness and tail delays under load. Lower latency ensures faster responses and more predictable performance for real-time applications.  
+
+**Peak VRAM (GB):** Maximum GPU memory used during inference at a given batch size and precision, indicating efficiency and scalability limits. Lower VRAM usage enables larger batch sizes or longer context windows to fit on the same hardware.  
 
 
 
@@ -93,7 +118,8 @@ From a business standpoint, inference efficiency is critical because serving lar
 
 
 ## Results: Table, Statisitical Tests
-### QPS vs FP32 — per batch
+
+#### QPS vs FP32 — per batch
 | Batch | Precision | Direction | × vs FP32 | 95% CI | p(two-sided) |
 | ---: | --- | --- | ---: | --- | ---: |
 | 32 | fp16 | faster | ×1.75 | 1.74–1.76 | 1.8e-09 |
@@ -111,7 +137,7 @@ From a business standpoint, inference efficiency is critical because serving lar
 
 
 
-### QPS vs FP32 — across batches (geo-mean)
+#### QPS vs FP32 — across batches (geo-mean)
 | Precision | Direction | × vs FP32 (geo-mean) | 95% CI | p(combined) |
 | --- | --- | ---: | --- | ---: |
 | fp16 | faster | ×2.19 | 1.81–2.64 | <1e-12 |

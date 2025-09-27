@@ -10,7 +10,15 @@ Quantization is a model optimization technique that reduces the numerical precis
 
 From a business standpoint, inference efficiency is critical because serving large models at scale drives up GPU costs and affects latency-sensitive applications. Quantization helps address these challenges by **reducing hardware costs**, **improving throughput**, **lowering energy consumption**, and **making deployment more scalable**, all while often maintaining comparable levels of accuracy. These benefits allow organizations to deliver AI systems more quickly and cost-effectively, turning cutting-edge research into practical, real-world products.
 
-In this study we benchmark the same base model across three precisions—**FP32** (baseline), **FP16** (tensor-core friendly half precision), and **INT4** (aggressive weight quantization)—to quantify throughput and latency trade-offs. Further, there are four sweep batch sizes **{32, 64, 128, 256}** under identical generation settings (fixed prompts, **max input length 512**, fixed max_new_tokens/temperature/top-p) and a single attention backend for fairness. FP32 serves as the “truth” for speed/VRAM comparisons; FP16 targets higher arithmetic density with minimal degradation; INT4 tests memory-bandwidth relief and packing efficiency. Results are reported per batch and summarized across batches to show how precision interacts with load.
+In this study we benchmark the same base model across three precisions to quantify throughput and latency trade-offs. 
+
+ - **FP32 (baseline)**: Full 32-bit precision—the highest memory/latency—and the reference for speed/VRAM comparisons.
+
+ - **FP16**: 16-bit half precision on tensor cores; typically similar with FP32 quality with much lower memory use and higher throughput.
+
+ - **INT4**: 4-bit weight quantization; sharply reduces memory/bandwidth and boosts throughput when small accuracy trade-offs are acceptable.
+
+We sweep batch sizes **{32, 64, 128, 256}** under identical generation settings (fixed prompts, max input length 512, fixed max_new_tokens/temperature/top-p) and a single attention backend for fairness, reporting per-batch results and across-batch summaries to show how precision interacts with load.
 
 ## Dataset (PubMedQA)
 This projects uses PubMedQA-Labeled dataset purely as a request generator. Although it includes yes/no/maybe labels, I ignored labels because the project overall goal is throughput/latency, not accuracy. 

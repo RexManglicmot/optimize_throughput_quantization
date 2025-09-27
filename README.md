@@ -1,5 +1,5 @@
 # Quantization
-> Quantization (FP16/INT4) delivers ~2–3× throughput with ~50% lower latency and up to ~70% less VRAM vs FP32.
+> Quantization (FP16/INT4) delivers **~2–3× throughput** with **~50% lower latency** and up to **~70% less VRAM vs FP32**.
 
 ## Inspiration
 I wanted to deepen my understanding of techniques that impact **inference efficiency**. One area I explored was **quantization**, which I first came across in [NVIDIA's *Mastering LLM Techniques: Inference Optimization*](https://developer.nvidia.com/blog/mastering-llm-techniques-inference-optimization/). Quantization is a model optimization approach that reduces GPU memory usage by lowering the precision of model weights (e.g., from FP32 to FP16 or INT4), enabling faster and more efficient inference.

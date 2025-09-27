@@ -53,17 +53,19 @@ From a business standpoint, inference efficiency is critical because serving lar
 
 ## Results: Visuals
  
+*** Precision
 ![Throughput and Precision](outputs/figures/throughput_vs_precision.png)
-* **Throughput increases as precision is reduced, with FP16 providing the best performance across all batch sizes — peaking at ~30.6 QPS with batch size 256, nearly 3× faster than FP32**. INT4 delivers lower throughput at small batch sizes but scales effectively, surpassing FP32 and approaching FP16 as the batch size grows. These results highlight that precision reduction, especially FP16, can significantly boost inference speed when workloads are scaled.*
-
-
+***Throughput increases as precision is reduced, with FP16 providing the best performance across all batch sizes — peaking at ~30.6 QPS with batch size 256, nearly 3× faster than FP32***. *INT4 delivers lower throughput at small batch sizes but scales effectively, surpassing FP32 and approaching FP16 as the batch size grows. These results highlight that precision reduction, especially FP16, can significantly boost inference speed when workloads are scaled.*
 
 
 ![VRAM and Precision](outputs/figures/vram_vs_precision.png)
-* **VRAM usage decreases significantly with lower precision**. FP32 peaks near 40 GB at batch size 256, while FP16 cuts memory roughly in half, and INT4 reduces it even further — dropping as low as 8 GB at batch size 32. These results show that quantization not only improves efficiency but also enables serving larger batch sizes within the same GPU memory budget, making deployment more scalable and cost-effective.*
+***VRAM usage decreases significantly with lower precision***. *FP32 peaks near 40 GB at batch size 256, while FP16 cuts memory roughly in half, and INT4 reduces it even further — dropping as low as 8 GB at batch size 32. These results show that quantization not only improves efficiency but also enables serving larger batch sizes within the same GPU memory budget, making deployment more scalable and cost-effective.*
 
 
+![Latency vs Precision](outputs/figures/latency_grouped_p50_p95.png)
+***Quantization reduces both median (p50) and tail (p95) latency compared to FP32.*** *FP16 achieves the lowest latencies overall, with p50 around 55 ms and p95 near 60 ms, while INT4 performs better than FP32 but remains higher than FP16. These results highlight that reduced precision not only improves average performance but also tightens latency distribution, making inference more predictable at scale.*
 
+*** Batch Sizes
 ![Latency vs Batch Size](outputs/figures/latency_vs_batch_avg.png)
 ***Latency decreases as batch size increases, with lower precision formats providing the best improvements***. *FP16 consistently achieves the lowest latency, dropping to ~32 ms at batch size 256, while INT4 starts higher but converges closer to FP16 as batch size grows. FP32 remains the slowest across all batch sizes, underscoring how precision reduction not only boosts throughput but also reduces response times for inference.*
 
@@ -71,6 +73,15 @@ From a business standpoint, inference efficiency is critical because serving lar
 ![Speed vs vs fp32 vs batch size](outputs/figures/speedup_vs_fp32.png)
 ***Quantization delivers clear speedups over FP32 as batch size grows.*** *FP16 provides the strongest gains, reaching ~2.6× faster than FP32 at batch size 256, while INT4 shows steady improvements, achieving ~2.2× at the same scale. These results highlight that precision reduction not only lowers memory and latency but also translates directly into faster inference throughput relative to the FP32 baseline.*
 
+***Costs
+![Cost per 1K Tokens by Precision](outputs/figures/cost_per_1k_tokens_by_precision.png)
+***Cost per 1k tokens decreases significantly with lower precision.*** *FP32 is the most expensive, reaching ~0.064¢ at batch size 32, while FP16 cuts costs by more than half, dropping to ~0.012¢ at batch size 256. INT4 shows higher costs than FP16 at small batch sizes but converges close at larger scales. These results demonstrate that quantization not only improves performance but also delivers substantial cost savings when serving large-scale inference.*
+
+![Cost Savings vs FP32 Baseline](outputs/figures/cost_per_query_by_precision.png)
+***Relative to FP32, quantization delivers substantial cost savings.*** *FP16 achieves the largest gains, cutting costs by ~43–62% depending on batch size, with the biggest savings at batch size 256. INT4 shows mixed results: it is less efficient at very small batch sizes (even negative savings at bsz=32), but scales strongly, reaching ~54% savings at bsz=256. These results highlight FP16 as the most reliable option for cost reduction, while INT4 can match or exceed savings once workloads are large enough.*
+
+![Queires per Dollar By Precision](outputs/figures/queries_per_usd_by_precision.png)
+***Quantization greatly improves the number of queries that can be served per dollar.*** *FP16 delivers the best efficiency, scaling from ~18k queries/$ at batch size 32 to over 55k queries/$ at batch size 256. INT4 starts off less efficient at small batches but scales strongly, reaching ~46k queries/$ at large batch sizes, well above FP32. These results highlight that precision reduction directly translates into higher cost efficiency when deploying at scale.*
 
 
 
@@ -87,9 +98,9 @@ From a business standpoint, inference efficiency is critical because serving lar
 | 256 | fp16 | faster | ×2.64 | 2.62–2.65 | 1.0e-06 |
 | 256 | int4 | faster | ×2.19 | 2.18–2.20 | 6.9e-07 |
 
-*The effect scales with batch size: **FP16 delivers ~2–2.6× at 64–256**, with ultra-tight CIs and p-values ≪ 1e-6—rock-solid wins. INT4 is the only miss at bsz=32 (0.95×), but turns decisively faster from bsz≥64 (1.24–2.19×), also with strong significance. 
+*The effect scales with batch size:* ***FP16 delivers ~2–2.6× at 64–256***, *with ultra-tight CIs and p-values ≪ 1e-6—rock-solid wins. INT4 is the only miss at bsz=32 (0.95×), but turns decisively faster from bsz≥64 (1.24–2.19×), also with strong significance.* 
 
-In short: **bigger batches amplify quantization’s throughput advantage**, with FP16 winning across the board and INT4 paying off once you batch.*
+*In short:* ***bigger batches amplify quantization’s throughput advantage***, *with FP16 winning across the board and INT4 paying off once you batch.*
 
 
 
@@ -99,7 +110,7 @@ In short: **bigger batches amplify quantization’s throughput advantage**, with
 | fp16 | faster | ×2.19 | 1.81–2.64 | <1e-12 |
 | int4 | faster | ×1.50 | 1.02–2.19 | <1e-12 |
 
-* **Both effects are statistically decisive** (p < 1e−12); FP16 shows the strongest, most reliable lift, while INT4 delivers a solid overall gain.*
+***Both effects are statistically decisive*** *(p < 1e−12); FP16 shows the strongest, most reliable lift, while INT4 delivers a solid overall gain.*
 
 
 

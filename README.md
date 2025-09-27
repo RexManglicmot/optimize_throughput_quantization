@@ -10,14 +10,15 @@ Quantization is a model optimization technique that reduces the numerical precis
 
 From a business standpoint, inference efficiency is critical because serving large models at scale drives up GPU costs and affects latency-sensitive applications. Quantization helps address these challenges by **reducing hardware costs**, **improving throughput**, **lowering energy consumption**, and **making deployment more scalable**, all while often maintaining comparable levels of accuracy. These benefits allow organizations to deliver AI systems more quickly and cost-effectively, turning cutting-edge research into practical, real-world products.
 
+In this study we benchmark the same base model across three precisions—**FP32** (baseline), **FP16** (tensor-core friendly half precision), and **INT4** (aggressive weight quantization)—to quantify throughput and latency trade-offs. Further, there are four sweep batch sizes **{32, 64, 128, 256}** under identical generation settings (fixed prompts, **max input length 512**, fixed max_new_tokens/temperature/top-p) and a single attention backend for fairness. FP32 serves as the “truth” for speed/VRAM comparisons; FP16 targets higher arithmetic density with minimal degradation; INT4 tests memory-bandwidth relief and packing efficiency. Results are reported per batch and summarized across batches to show how precision interacts with load.
+
 ## Dataset (PubMedQA)
+This projects uses PubMedQA-Labeled dataset purely as a request generator. Although it includes yes/no/maybe labels, I ignored labels because the project overall goal is throughput/latency, not accuracy. 
 
-
-
+For each run, I drew n=500 questions (fixed seed) and prompt with the question text only (no abstracts, options, or labels), truncating/padding inputs to 512 tokens to keep batches comparable. Generations are produced solely to exercise the model. We report QPS, tokens/sec, latency (p50/p95), and peak VRAM while sweeping precision (fp32/fp16/int4) and batch size (32/64/128/256) under fixed generation settings.
 
 ## Models
-
-
+This project uses **`Mistral-7B-v0.1`** from [HuggingFace](mistralai/Mistral-7B-v0.1), because it is a widely used 7B open model that’s easy to load with Transformers and has stable across attention backends (SDPA / FlashAttention), and friendly to precision sweeps (FP32/FP16/INT4). Its size fits single-GPU setups while still being strong enough to expose real throughput/latency trade-offs, so benchmarks, cost curves, and quantization results are both reproducible and representative.
 
 ## Workflow
 ```text
